@@ -22,6 +22,30 @@ A Streamlit interface that predicts a four-level accident severity label using a
 
 The bundle must provide `model`, `label_encoder`, `numeric_cols`, `categorical_cols`, and `bool_cols`. Run from the root and preserve its expected feature order and category handling. This repository contains the inference app and bundle; it does not include a standalone training notebook or source training dataset.
 
+## UML diagrams
+
+### Main workflow
+
+The app uses the saved bundle's column groups and label encoder to construct inputs and decode the classifier output.
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant App as Streamlit app.py
+    participant Schema as Saved feature schema
+    participant Model as Bundle classifier
+    participant Labels as Label encoder
+    App->>Schema: Read numeric, categorical, and boolean columns
+    Schema-->>App: Expected form and feature columns
+    User->>App: Enter accident attributes
+    App->>App: Construct model feature row
+    App->>Model: predict
+    Model-->>App: Encoded severity
+    App->>Labels: inverse_transform
+    Labels-->>App: Severity label
+    App-->>User: Display decoded severity
+```
+
 ## Getting started
 
 ```bash
